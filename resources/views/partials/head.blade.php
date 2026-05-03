@@ -1,6 +1,7 @@
 {{-- Shared <head> for all pages --}}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 {{-- Apply theme BEFORE render — prevents flash --}}
 <script>
@@ -82,13 +83,21 @@ tailwind.config = {
     --icon-blue-bg:      rgba(37,99,235,0.10);
     --icon-pink-bg:      rgba(219,39,119,0.10);
     --icon-orange-bg:    rgba(234,88,12,0.10);
+
+    /* Notification card colors — light mode */
+    --notif-danger-bg:   rgba(220,38,38,0.07);
+    --notif-danger-border: rgba(220,38,38,0.2);
+    --notif-warning-bg:  rgba(217,119,6,0.07);
+    --notif-warning-border: rgba(217,119,6,0.2);
+    --notif-success-bg:  rgba(13,148,136,0.07);
+    --notif-success-border: rgba(13,148,136,0.2);
 }
 
 .dark {
     /* ── Dark ── */
     --bg:                #0b1326;
     --bg-card:           rgba(255,255,255,0.04);
-    --bg-sidebar:        rgba(2,6,23,0.95);
+    --bg-sidebar:        #020617;
     --bg-header:         rgba(11,19,38,0.6);
     --bg-input:          rgba(255,255,255,0.06);
     --bg-hover:          rgba(255,255,255,0.04);
@@ -136,6 +145,14 @@ tailwind.config = {
     --icon-blue-bg:      rgba(96,165,250,0.12);
     --icon-pink-bg:      rgba(244,114,182,0.12);
     --icon-orange-bg:    rgba(251,146,60,0.12);
+
+    /* Notification card colors — dark mode (solid, tidak transparan) */
+    --notif-danger-bg:   #3b1212;
+    --notif-danger-border: #7f1d1d;
+    --notif-warning-bg:  #2d1f07;
+    --notif-warning-border: #78350f;
+    --notif-success-bg:  #0d2e2a;
+    --notif-success-border: #134e4a;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

@@ -89,7 +89,7 @@
 <body class="overflow-x-hidden font-sans antialiased">
 
 @include('partials.sidebar', ['activeMenu' => 'rencana'])
-
+@include('partials.ai-suggestion')
 <div class="fixed inset-0 pointer-events-none -z-10">
     <div class="absolute top-[5%] left-[20%] w-[40rem] h-[40rem] bg-violet-700/8 rounded-full blur-[120px]"></div>
     <div class="absolute bottom-[5%] right-[5%] w-[30rem] h-[30rem] bg-teal-500/6 rounded-full blur-[100px]"></div>
@@ -336,31 +336,6 @@
             </div>
             @endforelse
 
-            {{-- Smart Insight --}}
-            @if($borosKat || $goalDekat)
-            <div class="glass-card p-5 rounded-xl">
-                <h5 class="text-[10px] font-bold uppercase tracking-widest mb-4" style="color:var(--text-4)">SARAN</h5>
-                <div class="flex gap-3 items-start">
-                    <div class="p-2.5 rounded-xl flex-shrink-0" style="background:var(--icon-violet-bg)">
-                        <span class="ms text-[20px] text-violet-400">lightbulb</span>
-                    </div>
-                    <p class="text-sm leading-relaxed" style="color:var(--text-2)">
-                        @if($borosKat && $borosKat->overBudget)
-                            Budget <span class="text-red-400 font-bold">{{ $borosKat->nama }}</span> sudah melebihi batas.
-                            Kurangi pengeluaran <span class="text-red-400 font-bold">{{ \App\Enums\KategoriTransaksi::label($borosKat->kategori ?? '') }}</span> untuk menjaga keuangan sehat.
-                        @elseif($goalDekat)
-                            Goal <span class="text-violet-400 font-bold">{{ $goalDekat->nama }}</span> deadline dalam
-                            <span class="text-teal-400 font-bold">{{ $goalDekat->sisa_hari }} hari</span>.
-                            Tambah dana sekarang untuk mencapai target!
-                        @elseif($borosKat)
-                            Budget <span class="text-yellow-400 font-bold">{{ $borosKat->nama }}</span> sudah
-                            <span class="text-yellow-400 font-bold">{{ $borosKat->persen }}%</span> terpakai.
-                            Pantau pengeluaran agar tidak over budget.
-                        @endif
-                    </p>
-                </div>
-            </div>
-            @endif
         </div>
     </div>
 

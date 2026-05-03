@@ -46,42 +46,53 @@ class BerandaController extends Controller
             ->get();
 
         // ── Notifikasi: budget over + goal tercapai ──
-        $notifications = collect();
+        // Ambil daftar notif yang sudah di-dismiss dari session
+        $dismissedNotifs = session('dismissed_notifs', []);
+        $notifications   = collect();
 
-        // Budget yang melebihi alokasi bulan ini
+        // Budget yang melebihi alokasi (hitung SETELAH budget dibuat)
         $budgets = Rencana::where('user_id', $userId)->where('tipe', 'anggaran')->get();
         foreach ($budgets as $b) {
             $aktual = Transaksi::where('user_id', $userId)
                 ->where('tipe', 'pengeluaran')
                 ->where('kategori', $b->kategori)
-                ->whereDate('tanggal', '>=', $b->created_at->toDateString())
+                ->where('created_at', '>', $b->created_at)
                 ->whereMonth('tanggal', $b->created_at->month)
                 ->whereYear('tanggal', $b->created_at->year)
                 ->sum('jumlah');
+
             if ($aktual >= $b->target) {
-                $notifications->push([
-                    'type'    => 'budget',
-                    'level'   => $aktual > $b->target ? 'danger' : 'warning',
-                    'icon'    => 'payments',
-                    'message' => $aktual > $b->target
-                        ? 'Anggaran "' . $b->nama . '" sudah melebihi batas!'
-                        : 'Anggaran "' . $b->nama . '" sudah habis terpakai.',
-                    'link'    => route('rencana'),
-                ]);
+                $key = 'budget_' . $b->id . '_' . $b->updated_at->timestamp;
+                if (!in_array($key, $dismissedNotifs)) {
+                    $notifications->push([
+                        'key'     => $key,
+                        'type'    => 'budget',
+                        'level'   => $aktual > $b->target ? 'danger' : 'warning',
+                        'icon'    => 'payments',
+                        'message' => $aktual > $b->target
+                            ? 'Anggaran "' . $b->nama . '" sudah melebihi batas!'
+                            : 'Anggaran "' . $b->nama . '" sudah habis terpakai.',
+                        'link'    => route('rencana'),
+                    ]);
+                }
             }
         }
 
-        // Goal yang baru tercapai
+        // Goal yang tercapai
         $goals = Rencana::where('user_id', $userId)->where('tipe', 'tabungan')->get();
         foreach ($goals as $g) {
             if ($g->is_selesai) {
-                $notifications->push([
-                    'type'    => 'goal',
-                    'level'   => 'success',
-                    'icon'    => 'workspace_premium',
-                    'message' => 'Target "' . $g->nama . '" telah tercapai!',
-                    'link'    => route('rencana'),
-                ]);
+                $key = 'goal_' . $g->id;
+                if (!in_array($key, $dismissedNotifs)) {
+                    $notifications->push([
+                        'key'     => $key,
+                        'type'    => 'goal',
+                        'level'   => 'success',
+                        'icon'    => 'workspace_premium',
+                        'message' => 'Target "' . $g->nama . '" telah tercapai!',
+                        'link'    => route('rencana'),
+                    ]);
+                }
             }
         }
 
@@ -97,6 +108,34 @@ class BerandaController extends Controller
             'chartPemasukan', 'chartPengeluaran', 'appName', 'kategoriStats',
             'notifications', 'activeGoals',
         ));
+    }
+
+    // -------------------------------------------------------------------------
+    // Dismiss Notification
+    // -------------------------------------------------------------------------
+
+    public function dismissNotif(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $key      = $request->input('key');
+        $all      = $request->boolean('all', false);
+        $keys     = $request->input('keys', []);
+        $dismissed = session('dismissed_notifs', []);
+
+        if ($all && !empty($keys)) {
+            $dismissed = array_unique(array_merge($dismissed, $keys));
+        } elseif ($key) {
+            $dismissed[] = $key;
+            $dismissed   = array_unique($dismissed);
+        }
+
+        // Batasi maksimal 200 entry agar session tidak membengkak
+        if (count($dismissed) > 200) {
+            $dismissed = array_slice($dismissed, -200);
+        }
+
+        session(['dismissed_notifs' => $dismissed]);
+
+        return response()->json(['ok' => true]);
     }
 
     // -------------------------------------------------------------------------

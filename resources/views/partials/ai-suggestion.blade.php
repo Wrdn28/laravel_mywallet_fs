@@ -21,13 +21,12 @@
      class="fixed bottom-28 right-8 z-[199] w-80 hidden">
 
     <div class="rounded-2xl overflow-hidden"
-         style="background:var(--bg-card);
-                border:1px solid var(--border);
+         style="border:1px solid var(--border);
                 box-shadow:var(--shadow-lg)">
 
         {{-- Header --}}
         <div class="flex items-center justify-between px-5 py-4"
-             style="background:var(--bg-subtle); border-bottom:1px solid var(--border)">
+             style="background:var(--bg-sidebar); border-bottom:1px solid var(--border)">
             <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-teal-400
                             flex items-center justify-center shadow-lg">
@@ -49,7 +48,7 @@
 
         {{-- Content --}}
         <div id="aiContent" class="p-4 space-y-3 max-h-96 overflow-y-auto"
-             style="background:var(--bg-card)">
+             style="background:var(--bg-sidebar)">
             {{-- Loading state --}}
             <div id="aiLoading" class="flex flex-col items-center justify-center py-8 gap-3">
                 <div class="flex gap-1.5">
@@ -68,7 +67,7 @@
 
         {{-- Footer --}}
         <div class="px-5 py-3 flex items-center justify-between"
-             style="border-top:1px solid var(--border); background:var(--bg-subtle)">
+             style="border-top:1px solid var(--border); background:var(--bg-sidebar)">
             <p class="text-[10px]" style="color:var(--text-4)">Berdasarkan 30 hari terakhir</p>
             <button onclick="loadAiSuggestions(true)"
                     class="flex items-center gap-1 text-xs font-semibold transition-colors"
@@ -121,31 +120,31 @@ function getAiCardColors(type) {
     const isDark = document.documentElement.classList.contains('dark');
     const map = {
         danger:  {
-            bg:     isDark ? 'rgba(248,113,113,0.08)'  : 'rgba(220,38,38,0.06)',
-            border: isDark ? 'rgba(248,113,113,0.3)'   : 'rgba(220,38,38,0.2)',
+            bg:     isDark ? '#3b1212' : 'rgba(220,38,38,0.07)',
+            border: isDark ? '#7f1d1d' : 'rgba(220,38,38,0.25)',
             icon:   'var(--accent-red)',
-            badge:  isDark ? 'rgba(248,113,113,0.2)'   : 'rgba(220,38,38,0.1)',
+            badge:  isDark ? '#7f1d1d' : 'rgba(220,38,38,0.12)',
             badgeTx: 'var(--accent-red)',
         },
         warning: {
-            bg:     isDark ? 'rgba(251,191,36,0.08)'   : 'rgba(217,119,6,0.06)',
-            border: isDark ? 'rgba(251,191,36,0.3)'    : 'rgba(217,119,6,0.2)',
+            bg:     isDark ? '#2d1f07' : 'rgba(217,119,6,0.07)',
+            border: isDark ? '#78350f' : 'rgba(217,119,6,0.25)',
             icon:   'var(--accent-yellow)',
-            badge:  isDark ? 'rgba(251,191,36,0.2)'    : 'rgba(217,119,6,0.1)',
+            badge:  isDark ? '#78350f' : 'rgba(217,119,6,0.12)',
             badgeTx: 'var(--accent-yellow)',
         },
         success: {
-            bg:     isDark ? 'rgba(45,212,191,0.08)'   : 'rgba(13,148,136,0.06)',
-            border: isDark ? 'rgba(45,212,191,0.3)'    : 'rgba(13,148,136,0.2)',
+            bg:     isDark ? '#0d2e2a' : 'rgba(13,148,136,0.07)',
+            border: isDark ? '#134e4a' : 'rgba(13,148,136,0.25)',
             icon:   'var(--accent-teal)',
-            badge:  isDark ? 'rgba(45,212,191,0.2)'    : 'rgba(13,148,136,0.1)',
+            badge:  isDark ? '#134e4a' : 'rgba(13,148,136,0.12)',
             badgeTx: 'var(--accent-teal)',
         },
         info:    {
-            bg:     isDark ? 'rgba(167,139,250,0.08)'  : 'rgba(124,58,237,0.06)',
-            border: isDark ? 'rgba(167,139,250,0.3)'   : 'rgba(124,58,237,0.2)',
+            bg:     isDark ? '#1e1535' : 'rgba(124,58,237,0.07)',
+            border: isDark ? '#3b1f6e' : 'rgba(124,58,237,0.25)',
             icon:   'var(--accent-violet)',
-            badge:  isDark ? 'rgba(167,139,250,0.2)'   : 'rgba(124,58,237,0.1)',
+            badge:  isDark ? '#3b1f6e' : 'rgba(124,58,237,0.12)',
             badgeTx: 'var(--accent-violet)',
         },
     };

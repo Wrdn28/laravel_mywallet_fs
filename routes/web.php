@@ -17,6 +17,7 @@ Route::middleware(['auth', 'maintenance'])->group(function () {
     Route::put('/transaksi/{transaksi}',   [BerandaController::class, 'update'])->name('transaksi.update');
     Route::delete('/transaksi/{transaksi}',[BerandaController::class, 'destroy'])->name('transaksi.destroy');
     Route::get('/transaksi/export/{type}', [BerandaController::class, 'export'])->name('transaksi.export');
+    Route::post('/notif/dismiss',          [BerandaController::class, 'dismissNotif'])->name('notif.dismiss');
 
     // Settings
     Route::get('/pengaturan',                    [PengaturanController::class, 'index'])->name('pengaturan');

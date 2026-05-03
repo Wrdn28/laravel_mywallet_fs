@@ -56,11 +56,11 @@
                 {{-- Dropdown panel --}}
                 <div id="notifPanel"
                      class="absolute right-0 top-full mt-2 w-80 rounded-2xl overflow-hidden hidden z-[200]"
-                     style="background:var(--bg-card); border:1px solid var(--border); box-shadow:var(--shadow-lg)">
+                     style="background:var(--bg-sidebar); border:1px solid var(--border); box-shadow:var(--shadow-lg)">
 
                     {{-- Panel header --}}
                     <div class="flex items-center justify-between px-4 py-3"
-                         style="border-bottom:1px solid var(--border); background:var(--bg-subtle)">
+                         style="border-bottom:1px solid var(--border); background:var(--bg-sidebar)">
                         <div class="flex items-center gap-2">
                             <span class="ms text-[18px] text-violet-400">notifications</span>
                             <span class="text-sm font-bold" style="color:var(--text-1)">Notifikasi</span>
@@ -82,13 +82,13 @@
                         @foreach($notifications as $idx => $n)
                         @php
                             $nc = [
-                                'danger'  => ['icon'=>'var(--accent-red)',    'bg'=>'rgba(220,38,38,0.07)',  'border'=>'rgba(220,38,38,0.15)'],
-                                'warning' => ['icon'=>'var(--accent-yellow)', 'bg'=>'rgba(217,119,6,0.07)',  'border'=>'rgba(217,119,6,0.15)'],
-                                'success' => ['icon'=>'var(--accent-teal)',   'bg'=>'rgba(13,148,136,0.07)', 'border'=>'rgba(13,148,136,0.15)'],
+                                'danger'  => ['icon'=>'var(--accent-red)',    'bg'=>'var(--notif-danger-bg)',  'border'=>'var(--notif-danger-border)'],
+                                'warning' => ['icon'=>'var(--accent-yellow)', 'bg'=>'var(--notif-warning-bg)', 'border'=>'var(--notif-warning-border)'],
+                                'success' => ['icon'=>'var(--accent-teal)',   'bg'=>'var(--notif-success-bg)', 'border'=>'var(--notif-success-border)'],
                             ][$n['level']] ?? ['icon'=>'var(--accent-violet)', 'bg'=>'var(--bg-subtle)', 'border'=>'var(--border)'];
                         @endphp
                         <div class="notif-item flex items-start gap-3 px-4 py-3 transition-colors"
-                             data-idx="{{ $idx }}"
+                             data-key="{{ $n['key'] }}"
                              style="border-bottom:1px solid var(--divider)"
                              onmouseenter="this.style.background='var(--bg-hover)'"
                              onmouseleave="this.style.background=''">
@@ -104,7 +104,7 @@
                                     Lihat detail
                                 </a>
                             </div>
-                            <button onclick="dismissNotif({{ $idx }}, this)"
+                            <button onclick="dismissNotif('{{ $n['key'] }}', this)"
                                     class="ms text-[16px] flex-shrink-0 mt-0.5 transition-opacity hover:opacity-60"
                                     style="color:var(--text-4)">close</button>
                         </div>
@@ -118,7 +118,7 @@
                     </div>
 
                     {{-- Footer --}}
-                    <div class="px-4 py-2.5" style="border-top:1px solid var(--border); background:var(--bg-subtle)">
+                    <div class="px-4 py-2.5" style="border-top:1px solid var(--border); background:var(--bg-sidebar)">
                         <a href="{{ route('rencana') }}"
                            class="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-70"
                            style="color:var(--accent-violet)">
@@ -1021,7 +1021,6 @@ function toggleNotifPanel() {
     panel.classList.toggle('hidden');
 }
 
-// Tutup saat klik di luar
 document.addEventListener('click', function(e) {
     const wrap = document.getElementById('notifDropdownWrap');
     if (wrap && !wrap.contains(e.target)) {
@@ -1029,23 +1028,48 @@ document.addEventListener('click', function(e) {
     }
 });
 
-function dismissNotif(idx, btn) {
+function dismissNotif(key, btn) {
     const item = btn.closest('.notif-item');
     if (item) item.remove();
     updateNotifBadge();
+
+    // Simpan ke session via AJAX
+    fetch('{{ route("notif.dismiss") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+                            || '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ key })
+    });
 }
 
 function dismissAllNotif() {
-    document.querySelectorAll('.notif-item').forEach(el => el.remove());
+    const items  = document.querySelectorAll('.notif-item');
+    const keys   = Array.from(items).map(el => el.dataset.key).filter(Boolean);
+
+    items.forEach(el => el.remove());
     updateNotifBadge();
-    // Tampilkan empty state
+
     const list = document.getElementById('notifList');
-    if (list && list.children.length === 0) {
+    if (list) {
         list.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-10 gap-2">
+            <div class="flex flex-col items-center justify-center py-10 gap-2" style="background:var(--bg-sidebar)">
                 <span class="ms text-[36px]" style="color:var(--text-4)">notifications_none</span>
                 <p class="text-xs" style="color:var(--text-4)">Tidak ada notifikasi</p>
             </div>`;
+    }
+
+    if (keys.length) {
+        fetch('{{ route("notif.dismiss") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ all: true, keys })
+        });
     }
 }
 
