@@ -171,6 +171,24 @@ document.addEventListener('click', e => {
     document.querySelectorAll('[id$="Modal"]').forEach(m => { if (e.target === m) closeModal(m.id); });
 });
 
+// ── Role Picker ───────────────────────────────────────────────────────────────
+function selectRole(role) {
+    document.getElementById('roleValue').value = role;
+    document.querySelectorAll('.role-btn').forEach(btn => {
+        const isActive = btn.dataset.role === role;
+        if (isActive) {
+            const color = role === 'admin' ? 'var(--accent-red)' : 'var(--accent-violet)';
+            btn.style.borderColor = color;
+            btn.style.boxShadow   = '0 0 0 2px ' + color;
+            btn.style.background  = role === 'admin' ? 'rgba(220,38,38,0.08)' : 'rgba(124,58,237,0.08)';
+        } else {
+            btn.style.borderColor = 'var(--border)';
+            btn.style.boxShadow   = 'none';
+            btn.style.background  = 'var(--bg-input)';
+        }
+    });
+}
+
 // ── Delete User ──────────────────────────────────────────────────────────────
 function confirmDeleteUser(userId) {
     if (!confirm('Hapus user ini? Semua transaksinya juga akan dihapus.')) return;

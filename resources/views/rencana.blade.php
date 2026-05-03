@@ -563,18 +563,20 @@
                 <label class="block text-[10px] font-bold uppercase tracking-widest mb-2" style="color:var(--text-3)">
                     Pilih Icon
                 </label>
-                <div class="grid grid-cols-7 gap-2">
+                <div class="grid grid-cols-7 gap-2" id="iconPicker">
                     @foreach(['savings','flight_takeoff','home','directions_car','school','favorite','beach_access','laptop_mac','restaurant','shopping_bag'] as $ic)
-                    <label class="cursor-pointer">
-                        <input type="radio" name="icon" value="{{ $ic }}" {{ $ic === 'savings' ? 'checked' : '' }} class="sr-only peer">
-                        <div class="aspect-square rounded-xl border flex items-center justify-center
-                                    peer-checked:bg-teal-500/20 peer-checked:border-teal-500/60 transition-all"
-                             style="background:var(--bg-input); border-color:var(--border)">
-                            <span class="ms text-[18px] peer-checked:text-teal-400" style="color:var(--text-3)">{{ $ic }}</span>
-                        </div>
-                    </label>
+                    <button type="button"
+                            data-icon="{{ $ic }}"
+                            onclick="selectGoalIcon('{{ $ic }}')"
+                            class="icon-btn aspect-square rounded-xl border flex items-center justify-center transition-all"
+                            style="background:var(--bg-input); border-color:{{ $ic === 'savings' ? 'var(--accent-teal)' : 'var(--border)' }};
+                                   {{ $ic === 'savings' ? 'box-shadow:0 0 0 2px var(--accent-teal)' : '' }}">
+                        <span class="ms text-[18px]"
+                              style="color:{{ $ic === 'savings' ? 'var(--accent-teal)' : 'var(--text-3)' }}">{{ $ic }}</span>
+                    </button>
                     @endforeach
                 </div>
+                <input type="hidden" name="icon" id="goalIconValue" value="savings">
             </div>
             <div class="flex gap-3 pt-2">
                 <button type="button" onclick="closeModal('addGoalModal')"
@@ -826,6 +828,20 @@ function openTingkatkanModal(goalId, goalName, currentTarget) {
 document.addEventListener('DOMContentLoaded', () => {
     bindRupiahInput('tingkatkanDisplay', 'tingkatkanValue');
 });
+
+// ── Goal Icon Picker ──────────────────────────────────────────────────────────
+function selectGoalIcon(icon) {
+    document.getElementById('goalIconValue').value = icon;
+    document.querySelectorAll('.icon-btn').forEach(btn => {
+        const isActive = btn.dataset.icon === icon;
+        btn.style.borderColor = isActive ? 'var(--accent-teal)' : 'var(--border)';
+        btn.style.boxShadow   = isActive ? '0 0 0 2px var(--accent-teal)' : 'none';
+        btn.style.background  = isActive ? 'rgba(13,148,136,0.12)' : 'var(--bg-input)';
+        const span = btn.querySelector('.ms');
+        if (span) span.style.color = isActive ? 'var(--accent-teal)' : 'var(--text-3)';
+    });
+}
+
 @if($errors->any())
 document.addEventListener('DOMContentLoaded', () => openModal('addGoalModal'));
 @endif

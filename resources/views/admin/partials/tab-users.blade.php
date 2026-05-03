@@ -54,12 +54,26 @@
                     <td class="px-6 py-4 text-sm" style="color:var(--text-4)">#{{ $user->id }}</td>
                     <td class="px-6 py-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-teal-400
-                                        flex items-center justify-center text-xs font-bold flex-shrink-0"
-                                 style="color:#ffffff">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                                 style="background:{{ $user->is_admin ? 'linear-gradient(135deg,#dc2626,#f87171)' : 'linear-gradient(135deg,#7c3aed,#2dd4bf)' }}; color:#ffffff">
                                 {{ strtoupper(substr($user->email, 0, 1)) }}
                             </div>
-                            <span class="text-sm font-semibold" style="color:var(--text-1)">{{ $user->email }}</span>
+                            <div>
+                                <span class="text-sm font-semibold" style="color:var(--text-1)">{{ $user->email }}</span>
+                                <div class="mt-0.5">
+                                    @if($user->is_admin)
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                                          style="background:rgba(220,38,38,0.15); color:var(--accent-red)">
+                                        Admin
+                                    </span>
+                                    @else
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                                          style="background:var(--icon-violet-bg); color:var(--accent-violet)">
+                                        User
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </td>
                     <td class="px-6 py-4 text-sm" style="color:var(--text-3)">{{ $user->created_at->format('d M Y') }}</td>

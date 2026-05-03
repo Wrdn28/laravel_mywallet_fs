@@ -4,7 +4,7 @@
          style="background:var(--bg-card); border:1px solid var(--border); box-shadow:var(--shadow-lg)">
         <div class="flex items-center justify-between px-6 py-5" style="border-bottom:1px solid var(--border)">
             <h3 class="font-bold flex items-center gap-2" style="color:var(--text-1)">
-                <span class="ms text-[20px] text-violet-400">person_add</span> Add New User
+                <span class="ms text-[20px] text-violet-400">person_add</span> Tambah User
             </h3>
             <button onclick="closeModal('addUserModal')"
                     class="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
@@ -20,7 +20,7 @@
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider mb-2"
                        style="color:var(--text-3)">Email</label>
-                <input type="email" name="email" required placeholder="user@example.com"
+                <input type="email" name="email" required placeholder="contoh@email.com"
                        class="w-full rounded-xl px-4 py-3 text-sm focus:outline-none transition-all">
             </div>
             <div>
@@ -28,6 +28,33 @@
                        style="color:var(--text-3)">Password</label>
                 <input type="password" name="password" required minlength="6" placeholder="Min. 6 karakter"
                        class="w-full rounded-xl px-4 py-3 text-sm focus:outline-none transition-all">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider mb-2"
+                       style="color:var(--text-3)">Role</label>
+                <div class="grid grid-cols-2 gap-2" id="rolePicker">
+                    <button type="button" data-role="user"
+                            onclick="selectRole('user')"
+                            class="role-btn flex items-center gap-2.5 px-4 py-3 rounded-xl border transition-all"
+                            style="background:var(--bg-input); border-color:var(--accent-violet); box-shadow:0 0 0 2px var(--accent-violet)">
+                        <span class="ms text-[18px] text-violet-400">person</span>
+                        <div class="text-left">
+                            <p class="text-sm font-semibold" style="color:var(--text-1)">User</p>
+                            <p class="text-[10px]" style="color:var(--text-4)">Akses dashboard</p>
+                        </div>
+                    </button>
+                    <button type="button" data-role="admin"
+                            onclick="selectRole('admin')"
+                            class="role-btn flex items-center gap-2.5 px-4 py-3 rounded-xl border transition-all"
+                            style="background:var(--bg-input); border-color:var(--border)">
+                        <span class="ms text-[18px] text-red-400">admin_panel_settings</span>
+                        <div class="text-left">
+                            <p class="text-sm font-semibold" style="color:var(--text-1)">Admin</p>
+                            <p class="text-[10px]" style="color:var(--text-4)">Akses panel admin</p>
+                        </div>
+                    </button>
+                </div>
+                <input type="hidden" name="role" id="roleValue" value="user">
             </div>
             <div class="flex gap-3 pt-2">
                 <button type="button" onclick="closeModal('addUserModal')"
@@ -40,7 +67,7 @@
                                bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400
                                transition-all active:scale-95"
                         style="color:#ffffff">
-                    Add User
+                    Tambah
                 </button>
             </div>
         </form>

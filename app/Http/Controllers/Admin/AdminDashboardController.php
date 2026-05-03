@@ -20,10 +20,13 @@ class AdminDashboardController extends Controller
 
     public function index(Request $request): View
     {
-        $appName = SystemConfig::getValue('app_name', 'DOMPETKU');
+        $appName   = SystemConfig::getValue('app_name', 'DOMPETKU');
+        $adminEmail = SystemConfig::getValue('admin_email', '');
 
-        // Global stats (no filter)
-        $totalUsers        = User::where('email', '!=', 'admin@dompetku.com')->count();
+        // Global stats (no filter) — exclude admin account
+        $totalUsers        = User::where('is_admin', true)->exists()
+            ? User::where('is_admin', false)->count()
+            : User::where('email', '!=', $adminEmail)->count();
         $totalTransactions = Transaksi::count();
         $totalPemasukan    = Transaksi::where('tipe', 'pemasukan')->sum('jumlah');
         $totalPengeluaran  = Transaksi::where('tipe', 'pengeluaran')->sum('jumlah');
@@ -32,9 +35,9 @@ class AdminDashboardController extends Controller
         // Filtered queries (for transactions & reports tab)
         $query = $this->buildTransaksiQuery($request);
 
-        // Users list with search
+        // Users list with search — exclude admin
         $searchUser = $request->get('search_user', '');
-        $users = User::where('email', '!=', 'admin@dompetku.com')
+        $users = User::where('is_admin', false)
             ->when($searchUser, fn($q) => $q->where('email', 'like', "%{$searchUser}%"))
             ->withCount('transaksi')
             ->orderByDesc('created_at')
@@ -48,8 +51,8 @@ class AdminDashboardController extends Controller
             ->limit(50)
             ->get();
 
-        // User stats for reports
-        $userStats = User::where('email', '!=', 'admin@dompetku.com')
+        // User stats for reports — exclude admin
+        $userStats = User::where('is_admin', false)
             ->withCount(['transaksi as total_transactions'])
             ->withSum(['transaksi as total_pemasukan' => fn($q) => $q->where('tipe', 'pemasukan')], 'jumlah')
             ->withSum(['transaksi as total_pengeluaran' => fn($q) => $q->where('tipe', 'pengeluaran')], 'jumlah')
@@ -137,16 +140,19 @@ class AdminDashboardController extends Controller
         $request->validate([
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6',
+            'role'     => 'required|in:user,admin',
         ]);
 
         User::create([
             'name'     => explode('@', $request->email)[0],
             'email'    => $request->email,
             'password' => Hash::make($request->password),
+            'is_admin' => $request->role === 'admin',
         ]);
 
+        $roleLabel = $request->role === 'admin' ? 'Admin' : 'User';
         return redirect()->route('admin.dashboard', ['tab' => 'users'])
-            ->with('toast_success', 'User berhasil ditambahkan!');
+            ->with('toast_success', "{$roleLabel} berhasil ditambahkan!");
     }
 
     public function resetPassword(Request $request): RedirectResponse

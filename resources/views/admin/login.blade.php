@@ -26,7 +26,7 @@
             <div>
                 <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Email Admin</label>
                 <input type="email" name="email" value="{{ old('email') }}" required autofocus
-                       placeholder="admin@dompetku.com"
+                       placeholder="Email admin"
                        class="w-full bg-white/5 border {{ $errors->has('email') ? 'border-red-500/50' : 'border-white/10' }}
                               rounded-xl px-4 py-3 text-white text-sm placeholder:text-slate-600
                               focus:outline-none focus:border-red-500 transition-all">
