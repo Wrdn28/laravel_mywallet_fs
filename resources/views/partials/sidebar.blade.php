@@ -18,7 +18,7 @@
                 {{ $appName ?? 'DOMPETKU' }}
             </h1>
             <p class="text-[10px] font-semibold tracking-[0.2em] uppercase mt-1" style="color:var(--text-3)">
-                Finance Suite
+                Money Tracker
             </p>
         </div>
         <button onclick="closeSidebar()"

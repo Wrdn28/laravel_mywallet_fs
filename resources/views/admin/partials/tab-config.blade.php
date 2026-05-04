@@ -64,16 +64,21 @@
                         <span class="ms text-[14px]">construction</span> Maintenance Mode
                     </span>
                 </label>
-                <label class="flex items-center gap-3 cursor-pointer">
-                    <div class="relative">
+                <label class="flex items-center gap-3 cursor-pointer" onclick="toggleMaintenanceUI()">
+                    <div class="relative flex-shrink-0">
                         <input type="checkbox" name="maintenance_mode" value="1" id="maintenanceToggle"
                                {{ old('maintenance_mode', $maintenanceMode) === '1' ? 'checked' : '' }}
-                               class="sr-only peer">
-                        <div class="w-11 h-6 rounded-full peer-checked:bg-violet-600 transition-colors
-                                    after:content-[''] after:absolute after:top-0.5 after:left-0.5
-                                    after:bg-white after:rounded-full after:h-5 after:w-5
-                                    after:transition-all peer-checked:after:translate-x-5"
-                             style="background:var(--bg-input)"></div>
+                               class="sr-only">
+                        {{-- Track --}}
+                        <div id="maintenanceTrack"
+                             class="w-11 h-6 rounded-full transition-colors duration-200"
+                             style="background:{{ $maintenanceMode === '1' ? 'var(--accent-violet)' : 'var(--bg-input)' }}">
+                        </div>
+                        {{-- Thumb --}}
+                        <div id="maintenanceThumb"
+                             class="absolute top-0.5 h-5 w-5 rounded-full transition-all duration-200"
+                             style="background:#ffffff; left:{{ $maintenanceMode === '1' ? '22px' : '2px' }}">
+                        </div>
                     </div>
                     <span class="text-sm font-medium" style="color:var(--text-2)">Aktifkan mode maintenance</span>
                 </label>
@@ -85,6 +90,20 @@
                     <p class="text-sm font-semibold text-yellow-400">Mode maintenance sedang AKTIF!</p>
                 </div>
             </div>
+
+            <script>
+            function toggleMaintenanceUI() {
+                const cb      = document.getElementById('maintenanceToggle');
+                const track   = document.getElementById('maintenanceTrack');
+                const thumb   = document.getElementById('maintenanceThumb');
+                const warning = document.getElementById('maintenanceWarning');
+                cb.checked = !cb.checked;
+                track.style.background = cb.checked ? 'var(--accent-violet)' : 'var(--bg-input)';
+                thumb.style.left       = cb.checked ? '22px' : '2px';
+                warning.classList.toggle('hidden', !cb.checked);
+                warning.classList.toggle('flex',   cb.checked);
+            }
+            </script>
 
             {{-- Stats Info --}}
             <div class="grid grid-cols-2 gap-3 pt-2">

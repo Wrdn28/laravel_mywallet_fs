@@ -57,6 +57,13 @@
             <span class="ms text-[16px]">arrow_back</span> Kembali ke login user
         </a>
     </p>
+
+    {{-- Theme toggle pojok kanan bawah --}}
+    <div class="fixed bottom-6 right-6">
+        <button onclick="toggleTheme()" class="theme-toggle" title="Toggle tema">
+            <span class="ms text-[18px] theme-icon">light_mode</span>
+        </button>
+    </div>
 </div>
 </body>
 </html>

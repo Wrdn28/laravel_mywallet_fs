@@ -183,7 +183,7 @@
                         <form method="POST" action="{{ route('rencana.destroy', $b) }}"
                               class="opacity-0 group-hover:opacity-100 transition-opacity mt-1">
                             @csrf @method('DELETE')
-                            <button type="submit" onclick="return confirm('Hapus budget ini?')"
+                            <button type="submit" onclick="return confirm('Hapus alokasi ini?')"
                                 class="w-7 h-7 rounded-lg hover:bg-red-500/20 hover:text-red-400 flex items-center justify-center transition-all" style="background:var(--bg-input); color:var(--text-4)">
                                 <span class="ms text-[14px]">delete</span>
                             </button>
@@ -204,7 +204,7 @@
             @empty
             <div class="glass-card rounded-xl p-12 text-center">
                 <span class="ms text-[48px] block mb-3" style="color:var(--text-4)">account_balance_wallet</span>
-                <p class="text-sm font-semibold mb-1" style="color:var(--text-3)">Belum ada budget</p>
+                <p class="text-sm font-semibold mb-1" style="color:var(--text-3)">Belum ada alokasi</p>
                 <p class="text-xs mb-4" style="color:var(--text-4)">Buat budget untuk mengontrol pengeluaran per kategori</p>
                 <button onclick="openModal('addBudgetModal')"
                     class="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-violet-500 active:scale-95 transition-all">

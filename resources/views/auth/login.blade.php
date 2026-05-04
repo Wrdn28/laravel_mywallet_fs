@@ -49,10 +49,18 @@
                               placeholder:text-slate-600 focus:outline-none focus:border-violet-500 transition-all">
             </div>
 
-            <div class="flex items-center gap-2">
-                <input type="checkbox" name="remember" id="remember"
-                       class="w-4 h-4 rounded bg-white/5 border-white/20 accent-violet-500">
-                <label for="remember" class="text-slate-400 text-sm">Ingat saya</label>
+            <div class="flex items-center gap-2.5">
+                <button type="button" id="rememberBtn"
+                        onclick="toggleRemember()"
+                        class="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 transition-all"
+                        style="background:var(--bg-input); border:1.5px solid var(--border)">
+                    <span class="ms text-[14px] hidden" id="rememberCheck" style="color:#ffffff">check</span>
+                </button>
+                <input type="checkbox" name="remember" id="remember" class="hidden">
+                <label for="rememberBtn" onclick="toggleRemember()"
+                       class="text-sm cursor-pointer select-none" style="color:var(--text-3)">
+                    Ingat saya
+                </label>
             </div>
 
             <button type="submit"
@@ -72,5 +80,23 @@
         </a>
     </p>
 </div>
+
+<script>
+function toggleRemember() {
+    const cb    = document.getElementById('remember');
+    const btn   = document.getElementById('rememberBtn');
+    const check = document.getElementById('rememberCheck');
+    cb.checked = !cb.checked;
+    if (cb.checked) {
+        btn.style.background   = 'var(--accent-violet)';
+        btn.style.borderColor  = 'var(--accent-violet)';
+        check.classList.remove('hidden');
+    } else {
+        btn.style.background   = 'var(--bg-input)';
+        btn.style.borderColor  = 'var(--border)';
+        check.classList.add('hidden');
+    }
+}
+</script>
 </body>
 </html>
