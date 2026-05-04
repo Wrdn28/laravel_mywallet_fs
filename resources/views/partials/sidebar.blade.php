@@ -33,7 +33,7 @@
         @php
         $items = [
             ['key'=>'beranda',    'route'=>'beranda',     'icon'=>'dashboard',              'label'=>'Dashboard'],
-            ['key'=>'rencana',    'route'=>'rencana',     'icon'=>'account_balance_wallet', 'label'=>'Anggaran & Target'],
+            ['key'=>'rencana',    'route'=>'rencana',     'icon'=>'account_balance_wallet', 'label'=>'Capaian Keuangan'],
             ['key'=>'pengaturan', 'route'=>'pengaturan',  'icon'=>'manage_accounts',        'label'=>'Pengaturan'],
         ];
         @endphp

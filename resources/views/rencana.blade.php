@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id" class="dark">
 <head>
-    <title>Budget & Goals — {{ $appName }}</title>
+    <title>Capaian Keuangan — {{ $appName }}</title>
     @include('partials.head')
     <style>
     /* glass-card ikut tema via CSS variable */
@@ -204,11 +204,11 @@
             @empty
             <div class="glass-card rounded-xl p-12 text-center">
                 <span class="ms text-[48px] block mb-3" style="color:var(--text-4)">account_balance_wallet</span>
-                <p class="text-sm font-semibold mb-1" style="color:var(--text-3)">Belum ada alokasi</p>
-                <p class="text-xs mb-4" style="color:var(--text-4)">Buat budget untuk mengontrol pengeluaran per kategori</p>
+                <p class="text-sm font-semibold mb-1" style="color:var(--text-3)">Belum ada anggaran</p>
+                <p class="text-xs mb-4" style="color:var(--text-4)">Buat anggaran untuk mengontrol pengeluaran per kategori</p>
                 <button onclick="openModal('addBudgetModal')"
                     class="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-violet-500 active:scale-95 transition-all">
-                    + Buat Budget Pertama
+                    + Buat Anggaran Pertama
                 </button>
             </div>
             @endforelse
@@ -363,7 +363,7 @@
                 </p>
                 <div class="grid grid-cols-3 gap-8">
                     <div>
-                        <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color:var(--text-4)">BUDGET TERPAKAI</p>
+                        <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color:var(--text-4)">ANGGARAN TERPAKAI</p>
                         <p class="font-black text-2xl" style="color:{{ $budgetRate > 100 ? 'var(--accent-red)' : ($budgetRate > 80 ? 'var(--accent-yellow)' : 'var(--text-1)') }}">
                             {{ $budgetRate }}%
                         </p>
@@ -383,7 +383,7 @@
                     <p class="text-[10px] font-bold uppercase tracking-widest text-violet-400 mb-3">RINGKASAN BULAN INI</p>
                     <div class="space-y-2">
                         <div class="flex justify-between text-sm">
-                            <span style="color:var(--text-3)">Total Budget</span>
+                            <span style="color:var(--text-3)">Total Anggaran</span>
                             <span class="font-bold" style="color:var(--text-1)">Rp {{ number_format($totalBudget, 0, ',', '.') }}</span>
                         </div>
                         <div class="flex justify-between text-sm">
@@ -393,7 +393,7 @@
                             </span>
                         </div>
                         <div class="pt-2 flex justify-between text-sm" style="border-top:1px solid var(--border)">
-                            <span style="color:var(--text-3)">Sisa Budget</span>
+                            <span style="color:var(--text-3)">Sisa Anggaran</span>
                             <span class="font-bold" style="color:var(--accent-teal)">Rp {{ number_format($savingsThisMonth, 0, ',', '.') }}</span>
                         </div>
                     </div>
@@ -430,12 +430,12 @@
             <div id="budgetKatWarning" class="hidden items-start gap-3 px-4 py-3 rounded-xl"
                  style="background:rgba(217,119,6,0.1); border:1px solid rgba(217,119,6,0.3)">
                 <span class="ms text-[18px] text-yellow-400 flex-shrink-0">warning</span>
-                <p class="text-sm text-yellow-400" id="budgetKatWarningText">Kategori ini sudah memiliki budget aktif.</p>
+                <p class="text-sm text-yellow-400" id="budgetKatWarningText">Kategori ini sudah memiliki anggaran aktif.</p>
             </div>
 
             <div>
                 <label class="block text-[10px] font-bold uppercase tracking-widest mb-2" style="color:var(--text-3)">
-                    Nama Budget
+                    Nama Anggaran
                 </label>
                 <input type="text" name="nama" id="budgetNama" placeholder="Contoh: Makan & Minum" required
                        class="w-full rounded-xl px-4 py-3 text-sm focus:outline-none transition-all">
@@ -459,7 +459,7 @@
             </div>
             <div>
                 <label class="block text-[10px] font-bold uppercase tracking-widest mb-2" style="color:var(--text-3)">
-                    Target Budget <span style="color:var(--accent-red)">*</span>
+                    Target Anggaran <span style="color:var(--accent-red)">*</span>
                 </label>
                 <div class="relative">
                     <span class="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center text-xs font-bold rounded-l-xl"
@@ -480,7 +480,7 @@
                         class="flex-1 py-2.5 rounded-xl text-sm font-bold
                                bg-gradient-to-r from-violet-600 to-violet-500 hover:opacity-90 transition-all active:scale-95"
                         style="color:#ffffff">
-                    Buat Budget
+                    Buat Anggaran
                 </button>
             </div>
         </form>
@@ -770,7 +770,7 @@ function onBudgetKategoriChange(select) {
 
     if (hasBudget) {
         const existingName = opt.dataset.budgetName;
-        warnTxt.textContent = 'Kategori ini sudah memiliki budget "' + existingName + '". Hapus dulu sebelum membuat baru.';
+        warnTxt.textContent = 'Kategori ini sudah memiliki anggaran "' + existingName + '". Hapus dulu sebelum membuat baru.';
         warning.classList.remove('hidden');
         warning.classList.add('flex');
         submitBtn.disabled = true;
