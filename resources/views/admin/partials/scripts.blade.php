@@ -40,20 +40,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }));
 
     // Monthly Trend Line
-    registerChart(new Chart(document.getElementById('monthlyTrendChart'), {
-        type: 'line',
-        data: {
-            labels: monthlyLabels,
-            datasets: [
-                { label: 'Pemasukan',   data: monthlyIncome,  borderColor: '#2dd4bf', backgroundColor: 'rgba(45,212,191,0.1)',  tension: 0.4, fill: true, pointBackgroundColor: '#2dd4bf' },
-                { label: 'Pengeluaran', data: monthlyExpense, borderColor: '#f87171', backgroundColor: 'rgba(248,113,113,0.1)', tension: 0.4, fill: true, pointBackgroundColor: '#f87171' },
-            ]
-        },
-        options: chartOpts
-    }));
+    const monthlyTrendCanvas = document.getElementById('monthlyTrendChart');
+    if (monthlyTrendCanvas) {
+        registerChart(new Chart(monthlyTrendCanvas, {
+            type: 'line',
+            data: {
+                labels: monthlyLabels,
+                datasets: [
+                    { label: 'Pemasukan',   data: monthlyIncome,  borderColor: '#2dd4bf', backgroundColor: 'rgba(45,212,191,0.1)',  tension: 0.4, fill: true, pointBackgroundColor: '#2dd4bf' },
+                    { label: 'Pengeluaran', data: monthlyExpense, borderColor: '#f87171', backgroundColor: 'rgba(248,113,113,0.1)', tension: 0.4, fill: true, pointBackgroundColor: '#f87171' },
+                ]
+            },
+            options: chartOpts
+        }));
+    }
 
     // Category Doughnut Chart (detail section)
     if (window.categoryChartData) {
+        console.log('categoryChartData:', window.categoryChartData);
+        console.log('Chart data values:', window.categoryChartData.data);
         const catCanvas = document.getElementById('categoryDoughnutChart');
         if (catCanvas) {
             registerChart(new Chart(catCanvas, {
@@ -109,7 +114,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             backgroundColor: c.tooltipBg, titleColor: c.tooltipTitle,
                             bodyColor: c.tooltipBody, borderColor: c.tooltipBorder,
                             borderWidth: 1, padding: 12,
-                            callbacks: { label: ctx => ' Rp ' + ctx.parsed.toLocaleString('id-ID') }
+                            callbacks: { 
+                                    label: function(ctx) {
+                                    let value = ctx.raw;
+
+                                    // kalau ternyata object, ambil valuenya
+                                    if (typeof value === 'object') {
+                                        value = value?.y ?? value?.value ?? 0;
+                                    }
+
+                                    return 'Pengeluaran: ' + new Intl.NumberFormat('id-ID').format(value);
+                                }
+                             }
                         }
                     },
                     scales: {

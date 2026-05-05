@@ -57,13 +57,6 @@
 {{-- Top Expense Category --}}
 @php
     use App\Enums\KategoriTransaksi;
-    $topExpenseCategories = \App\Models\Transaksi::where('tipe','pengeluaran')
-        ->whereNotNull('kategori')
-        ->selectRaw('kategori, SUM(jumlah) as total, COUNT(*) as jumlah_transaksi')
-        ->groupBy('kategori')
-        ->orderByDesc('total')
-        ->limit(8)
-        ->get();
     $maxCatTotal = $topExpenseCategories->max('total') ?: 1;
     $chartColors = ['#f87171','#fb923c','#fbbf24','#a78bfa','#60a5fa','#34d399','#f472b6','#94a3b8'];
 @endphp
@@ -148,7 +141,7 @@
 <script>
 window.categoryChartData = {
     labels: @json($topExpenseCategories->map(fn($c) => KategoriTransaksi::label($c->kategori))),
-    data:   @json($topExpenseCategories->pluck('total')),
+    data:   @json($topExpenseCategories->map(fn($c) => (int) $c->total)),
     colors: @json(array_slice($chartColors, 0, $topExpenseCategories->count())),
 };
 </script>

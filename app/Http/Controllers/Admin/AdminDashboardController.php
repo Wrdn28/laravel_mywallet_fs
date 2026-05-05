@@ -53,10 +53,26 @@ class AdminDashboardController extends Controller
 
         // User stats for reports — exclude admin
         $userStats = User::where('is_admin', false)
-            ->withCount(['transaksi as total_transactions'])
-            ->withSum(['transaksi as total_pemasukan' => fn($q) => $q->where('tipe', 'pemasukan')], 'jumlah')
-            ->withSum(['transaksi as total_pengeluaran' => fn($q) => $q->where('tipe', 'pengeluaran')], 'jumlah')
+            ->withCount(['transaksi as total_transactions' => fn($q) => $this->applyPeriodeFilter($q, $request)])
+            ->withSum(['transaksi as total_pemasukan' => fn($q) => $this->applyPeriodeFilter($q, $request)->where('tipe', 'pemasukan')], 'jumlah')
+            ->withSum(['transaksi as total_pengeluaran' => fn($q) => $this->applyPeriodeFilter($q, $request)->where('tipe', 'pengeluaran')], 'jumlah')
             ->get();
+
+        // Top expense categories for reports
+        $topExpenseCategories = Transaksi::query()
+            ->where('tipe', 'pengeluaran')
+            ->whereNotNull('kategori')
+            ->when($request->get('periode', 'all') !== 'all', fn($q) => $this->applyPeriodeFilter($q, $request))
+            ->selectRaw('kategori, CAST(SUM(jumlah) AS UNSIGNED) as total, COUNT(*) as jumlah_transaksi')
+            ->groupBy('kategori')
+            ->orderByDesc('total')
+            ->limit(8)
+            ->get()
+            ->map(function ($item) {
+                $item->total = (int) $item->total;
+                $item->jumlah_transaksi = (int) $item->jumlah_transaksi;
+                return $item;
+            });
 
         // Monthly stats (last 6 months)
         $monthlyStats = Transaksi::selectRaw("
@@ -123,7 +139,7 @@ class AdminDashboardController extends Controller
         return view('admin.dashboard', compact(
             'appName', 'totalUsers', 'totalTransactions',
             'totalPemasukan', 'totalPengeluaran', 'totalSaldo',
-            'users', 'transactions', 'userStats', 'monthlyStats',
+            'users', 'transactions', 'userStats', 'topExpenseCategories', 'monthlyStats',
             'config', 'maintenanceMode', 'adminEmail', 'systemVersion',
             'activeTab', 'searchUser',
             'totalBudgets', 'totalGoals', 'goalsSelesai', 'budgetsOverLimit',
@@ -245,8 +261,12 @@ class AdminDashboardController extends Controller
 
     private function buildTransaksiQuery(Request $request)
     {
+        return $this->applyPeriodeFilter(Transaksi::query(), $request);
+    }
+
+    private function applyPeriodeFilter($query, Request $request)
+    {
         $periode = $request->get('periode', 'all');
-        $query   = Transaksi::query();
 
         if ($periode === 'week') {
             $query->whereBetween('tanggal', [now()->subWeek(), now()]);
